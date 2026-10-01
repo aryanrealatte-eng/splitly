@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Splitly - Shared expenses, settled</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f0;--card:#fbfdfc;--ink:#0f2a24;--mute:#5b7068;--line:#d5e0db;--brand:#0f6b57;--onbrand:#fff;--owe:#d9481f;--get:#0b8559;--hi:#ffd84d;--shadow:0 10px 30px rgba(15,42,36,.08);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1714;--card:#12251f;--ink:#e6f2ee;--mute:#92aaa1;--line:#21382f;--brand:#3fcf9f;--onbrand:#062018;--owe:#ff8a65;--get:#4fe0a8;--shadow:0 10px 30px rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1714;--card:#12251f;--ink:#e6f2ee;--mute:#92aaa1;--line:#21382f;--brand:#3fcf9f;--onbrand:#062018;--owe:#ff8a65;--get:#4fe0a8;--shadow:0 10px 30px rgba(0,0,0,.4);color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:8px}
+.wrap{max-width:760px;margin:0 auto;padding:18px 18px 120px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:6px 0 18px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.02em}
+.mark{width:34px;height:34px;border-radius:10px;background:var(--brand);color:var(--onbrand);display:grid;place-items:center;font-weight:800;transform:rotate(-6deg)}
+.hero{padding:18px 0 8px}
+.hero h1{font-size:clamp(34px,7vw,56px);line-height:1.02;letter-spacing:-.035em;margin:0 0 14px;font-weight:800}
+.hero h1 mark{background:linear-gradient(transparent 58%,var(--hi) 58%);color:inherit;padding:0 4px}
+.hero p{color:var(--mute);max-width:46ch;margin:0 0 20px;font-size:17px}
+.btn{padding:11px 18px;border-radius:12px;font-weight:600;border:1.5px solid var(--line);background:var(--card);transition:transform .15s,box-shadow .15s,background .15s}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--brand);color:var(--onbrand);border-color:var(--brand)}
+.btn.sm{padding:7px 12px;font-size:14px;border-radius:10px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+.stat{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:16px}
+.stat small{color:var(--mute);display:block}.stat b{font-size:26px;letter-spacing:-.02em}
+.get{color:var(--get)}.owe{color:var(--owe)}
+h2{font-size:20px;margin:26px 0 12px;letter-spacing:-.01em}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.gcard{text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:6px;transition:transform .2s,box-shadow .2s;width:100%}
+.gcard:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.gcard .em{font-size:30px}.gcard strong{font-size:18px}.gcard span{color:var(--mute);font-size:14px}
+.empty{background:var(--card);border:2px dashed var(--line);border-radius:20px;padding:30px;text-align:center;color:var(--mute)}
+.empty .row{justify-content:center;margin-top:14px}
+.enter{animation:rise .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.back{display:inline-flex;gap:6px;align-items:center;color:var(--mute);font-weight:600;padding:6px 0 14px}
+.ghead{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.ghead .em{font-size:40px}.ghead h1{margin:0;font-size:30px;letter-spacing:-.025em;line-height:1.1}
+.ghead small{color:var(--mute)}
+.summary{background:var(--brand);color:var(--onbrand);border-radius:20px;padding:20px;margin-bottom:16px}
+.summary small{opacity:.8;display:block}.summary b{font-size:32px;letter-spacing:-.025em}
+.tabs{display:flex;gap:6px;background:var(--line);padding:4px;border-radius:14px;margin-bottom:14px}
+.tabs button{flex:1;padding:9px;border-radius:11px;font-weight:600;color:var(--mute);transition:background .2s,color .2s}
+.tabs button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.ticket{position:relative;display:flex;align-items:center;gap:12px;background:var(--card);padding:14px 16px;margin-bottom:10px;border-radius:14px;border:1.5px solid var(--line);border-left:6px double var(--line)}
+.ticket .mid{flex:1;min-width:0}.ticket .mid b{display:block;overflow-wrap:anywhere}.ticket small{color:var(--mute)}
+.ticket .amt{text-align:right;font-weight:700;white-space:nowrap}.ticket .amt small{display:block;font-weight:400}
+.av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.x{color:var(--mute);width:30px;height:30px;border-radius:8px;flex:none}.x:hover{background:var(--line);color:var(--owe)}
+.person{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line)}
+.person .mid{flex:1}.bar{height:6px;border-radius:6px;background:var(--line);margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.sug{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;flex-wrap:wrap}
+.fab{position:fixed;right:max(18px,calc(50% - 362px));bottom:calc(20px + env(safe-area-inset-bottom,0px));padding:15px 22px;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;box-shadow:var(--shadow);transition:transform .15s}
+.fab:hover{transform:scale(1.04)}.fab:active{transform:scale(.96)}
+.modal{position:fixed;inset:0;background:rgba(8,20,16,.55);display:none;align-items:flex-end;justify-content:center;z-index:20;opacity:0;transition:opacity .2s}
+.modal.open{display:flex;opacity:1}
+.sheet{background:var(--card);width:100%;max-width:520px;max-height:92%;overflow:auto;border-radius:24px 24px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px));animation:up .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@media(min-width:600px){.modal{align-items:center}.sheet{border-radius:24px}}
+.sheet h3{margin:0 0 14px;font-size:22px;letter-spacing:-.02em}
+label,.lbl{display:block;font-weight:600;font-size:14px;margin:12px 0 5px}
+input,select{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg)}
+input:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 25%,transparent)}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>.btn{flex:1}
+.emos{display:flex;gap:8px;flex-wrap:wrap}.emos button{width:44px;height:44px;border-radius:12px;font-size:22px;border:1.5px solid var(--line)}
+.emos button.on{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 14%,transparent);transform:scale(1.08)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{position:relative;margin:0;font-weight:500}
+.chip input{position:absolute;opacity:0;width:100%;height:100%;inset:0;cursor:pointer}
+.chip span{display:block;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line)}
+.chip input:checked+span{background:var(--brand);color:var(--onbrand);border-color:var(--brand)}
+.chip input:focus-visible+span{outline:3px solid var(--brand);outline-offset:2px}
+.hint{color:var(--mute);font-size:14px;margin-top:10px;min-height:21px}
+.err{color:var(--owe);font-size:14px;min-height:21px;margin-top:8px;font-weight:600}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:12px;display:flex;gap:14px;align-items:center;opacity:0;pointer-events:none;transition:all .25s;z-index:30}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{color:var(--hi);font-weight:700}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+let S={groups:[]};
+try{const r=localStorage.getItem('splitly:v1');if(r){const p=JSON.parse(r);if(p&&Array.isArray(p.groups))S=p}}catch(e){}
+const save=()=>{try{localStorage.setItem('splitly:v1',JSON.stringify(S))}catch(e){}};
+let R={view:'home',gid:null,tab:'expenses'},undoFn=null,toastT=0,emoPick='🏠';
+const SYM={INR:'₹',USD:'$',EUR:'€',GBP:'£',AED:'AED '};
+const fmt=(c,cur)=>(SYM[cur]||'')+(Math.abs(c)/100).toLocaleString(cur==='INR'?'en-IN':'en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const gById=id=>S.groups.find(g=>g.id===id);
+const mem=(g,id)=>g.members.find(m=>m.id===id)||{name:'Someone',id:''};
+const dt=t=>new Date(t).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+function av(m){let h=0;for(const c of m.name)h=(h*31+c.charCodeAt(0))%360;return `<span class="av" style="background:hsl(${h},55%,42%)">${esc(m.name.trim().charAt(0).toUpperCase()||'?')}</span>`}
+function shares(e,n){const ids=e.split.filter(i=>i in n),o={},k=ids.length||1,b=Math.floor(e.amt/k),r=e.amt-b*k;ids.forEach((i,x)=>o[i]=b+(x<r?1:0));return o}
+function bal(g){const n={};g.members.forEach(m=>n[m.id]=0);
+ g.expenses.forEach(e=>{
+  if(e.type==='settle'){if(e.paidBy in n)n[e.paidBy]+=e.amt;if(e.to in n)n[e.to]-=e.amt;return}
+  const sh=shares(e,n);if(!Object.keys(sh).length||!(e.paidBy in n))return;
+  n[e.paidBy]+=e.amt;for(const i in sh)n[i]-=sh[i]});
+ return n}
+function debts(n){const c=[],d=[];for(const k in n){if(n[k]>0)c.push([k,n[k]]);else if(n[k]<0)d.push([k,-n[k]])}
+ c.sort((a,b)=>b[1]-a[1]);d.sort((a,b)=>b[1]-a[1]);const o=[];let i=0,j=0;
+ while(i<c.length&&j<d.length){const a=Math.min(c[i][1],d[j][1]);o.push({from:d[j][0],to:c[i][0],amt:a});c[i][1]-=a;d[j][1]-=a;if(!c[i][1])i++;if(!d[j][1])j++}
+ return o}
+const money=v=>{const x=Math.round(parseFloat(String(v).replace(/,/g,''))*100);return Number.isFinite(x)&&x>0&&x<1e11?x:0};
+
+/* ---------- views ---------- */
+function homeV(){
+ let owed=0,owe=0;
+ S.groups.forEach(g=>{const b=bal(g)[g.members[0].id]||0;if(b>0)owed+=b;else owe-=b});
+ const cur=S.groups.length&&S.groups.every(g=>g.cur===S.groups[0].cur)?S.groups[0].cur:'INR';
+ const cards=S.groups.map(g=>{const b=bal(g)[g.members[0].id]||0;
+  return `<button class="gcard" data-act="open" data-id="${g.id}"><span class="em">${g.emoji}</span><strong>${esc(g.name)}</strong><span>${g.members.length} people, ${g.expenses.length} entries</span><span class="${b>0?'get':b<0?'owe':''}">${b>0?'You are owed '+fmt(b,g.cur):b<0?'You owe '+fmt(b,g.cur):'All settled'}</span></button>`}).join('');
+ return `<div><div class="top"><div class="logo"><span class="mark">S</span>Splitly</div></div>
+ <section class="hero"><h1>Split the bill, <mark>keep the peace.</mark></h1><p>Track shared expenses with housemates, trips, friends and family. See who owes whom and settle up in the fewest payments.</p><button class="btn pri" data-act="newgroup">Create a group</button></section>
+ <div class="stats"><div class="stat"><small>You are owed</small><b class="get">${fmt(owed,cur)}</b></div><div class="stat"><small>You owe</small><b class="owe">${fmt(owe,cur)}</b></div></div>
+ <h2>Your groups</h2>${S.groups.length?`<div class="grid">${cards}</div>`:`<div class="empty"><b>No groups yet</b><br>Create a group for your next trip or flat, or explore a ready-made example.<div class="row"><button class="btn pri" data-act="newgroup">Create a group</button><button class="btn" data-act="demo">Try an example</button></div></div>`}</div>`}
+
+function groupV(g){
+ const n=bal(g),me=g.members[0].id,b=n[me]||0;
+ const ex=g.expenses.slice().sort((a,b)=>b.date-a.date).map(e=>{
+  if(e.type==='settle')return `<div class="ticket">${av(mem(g,e.paidBy))}<div class="mid"><b>${esc(mem(g,e.paidBy).name)} paid ${esc(mem(g,e.to).name)}</b><small>Settlement, ${dt(e.date)}</small></div><div class="amt get">${fmt(e.amt,g.cur)}</div><button class="x" aria-label="Delete entry" data-act="del" data-id="${e.id}">✕</button></div>`;
+  const sh=shares(e,n),mine=sh[me]||0,eff=(e.paidBy===me?e.amt:0)-mine;
+  return `<div class="ticket">${av(mem(g,e.paidBy))}<div class="mid"><b>${esc(e.desc)}</b><small>${esc(mem(g,e.paidBy).name)} paid ${fmt(e.amt,g.cur)}, ${dt(e.date)}</small></div><div class="amt ${eff>0?'get':eff<0?'owe':''}">${eff>0?'you lent':eff<0?'you owe':'not involved'}${eff?`<small>${fmt(eff,g.cur)}</small>`:''}</div><button class="x" aria-label="Delete entry" data-act="del" data-id="${e.id}">✕</button></div>`}).join('');
+ const mx=Math.max(1,...Object.values(n).map(Math.abs));
+ const people=g.members.map(m=>{const v=n[m.id]||0;return `<div class="person">${av(m)}<div class="mid"><b>${esc(m.name)}${m.id===me?' (you)':''}</b><div class="bar"><i style="width:${Math.round(Math.abs(v)/mx*100)}%;background:${v>=0?'var(--get)':'var(--owe)'}"></i></div></div><b class="${v>0?'get':v<0?'owe':''}">${v>0?'gets '+fmt(v,g.cur):v<0?'owes '+fmt(v,g.cur):'settled'}</b></div>`}).join('');
+ const dl=debts(n),sug=dl.length?dl.map(d=>`<div class="sug"><span><b>${esc(mem(g,d.from).name)}</b> pays <b>${esc(mem(g,d.to).name)}</b> ${fmt(d.amt,g.cur)}</span><button class="btn sm pri" data-act="settle" data-from="${d.from}" data-to="${d.to}" data-amt="${(d.amt/100).toFixed(2)}">Record payment</button></div>`).join(''):'<div class="empty">Everyone is settled up.</div>';
+ const body=R.tab==='expenses'?(ex||'<div class="empty">No expenses yet. Add the first one with the button below.</div>'):`<div>${people}</div><h2>Fewest payments to settle</h2>${sug}`;
+ return `<div><button class="back" data-act="home">← All groups</button>
+ <div class="ghead"><span class="em">${g.emoji}</span><div><h1>${esc(g.name)}</h1><small>${g.members.map(m=>esc(m.name)).join(', ')}</small></div></div>
+ <div class="summary"><small>${b>0?'You are owed':b<0?'You owe':'Your balance'}</small><b>${b?fmt(b,g.cur):'All settled'}</b></div>
+ <div class="tabs" role="tablist"><button class="${R.tab==='expenses'?'on':''}" data-act="tab" data-tab="expenses" role="tab">Expenses</button><button class="${R.tab==='balances'?'on':''}" data-act="tab" data-tab="balances" role="tab">Balances</button></div>${body}
+ <button class="fab" data-act="addexp">+ Add expense</button></div>`}
+
+function render(anim){
+ if(R.view==='group'&&!gById(R.gid))R={view:'home',gid:null,tab:'expenses'};
+ const g=R.view==='group'?gById(R.gid):null;
+ $('#app').innerHTML=g?groupV(g):homeV();
+ const v=$('#app').firstElementChild;if(anim&&v)v.classList.add('enter')}
+
+/* ---------- modal + toast ---------- */
+function openModal(h){const m=$('#modal');m.innerHTML=`<div class="sheet">${h}</div>`;m.classList.add('open');const f=m.querySelector('input,select');if(f)setTimeout(()=>f.focus(),60)}
+function closeModal(){$('#modal').classList.remove('open');$('#modal').innerHTML=''}
+function toast(msg,undo){const t=$('#toast');undoFn=undo||null;t.innerHTML=`<span>${esc(msg)}</span>${undo?'<button data-act="undo">Undo</button>':''}`;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),4500)}
+const setErr=m=>{const e=$('#err');if(e)e.textContent=m};
+const curG=()=>gById(R.gid);
+const opts=(g,sel)=>g.members.map(m=>`<option value="${m.id}" ${m.id===sel?'selected':''}>${esc(m.name)}</option>`).join('');
+function memInput(v,ph){return `<input class="mi" maxlength="24" placeholder="${ph}" value="${esc(v)}" style="margin-bottom:8px">`}
+function prev(){const g=curG();if(!g||!$('#xv'))return;const a=money($('#xa').value),k=document.querySelectorAll('.xs:checked').length;
+ $('#xv').textContent=a&&k?`${fmt(Math.floor(a/k),g.cur)} each between ${k} ${k===1?'person':'people'}`:'Enter an amount and choose who shares it.'}
+
+/* ---------- actions ---------- */
+const A={
+ home(){R={view:'home',gid:null,tab:'expenses'};render(true);scrollTo(0,0)},
+ open(t){R={view:'group',gid:t.dataset.id,tab:'expenses'};render(true);scrollTo(0,0)},
+ tab(t){R.tab=t.dataset.tab;render(false)},
+ newgroup(){emoPick='🏠';openModal(`<h3>New group</h3><label for="gn">Group name</label><input id="gn" maxlength="30" placeholder="Goa trip, Flat 4B, Family"><div class="lbl">Icon</div><div class="emos">${['🏠','✈️','🍕','🎉','🚗','💼','🎬','🛒'].map(e=>`<button type="button" data-act="emo" data-e="${e}" class="${e==='🏠'?'on':''}">${e}</button>`).join('')}</div><label for="gc">Currency</label><select id="gc"><option value="INR">₹ INR</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option><option value="GBP">£ GBP</option><option value="AED">AED</option></select><div class="lbl">People (first is you)</div><div id="ml">${memInput('','Your name')}${memInput('','Friend name')}${memInput('','Friend name')}</div><button type="button" class="btn sm" data-act="addmem">+ Add person</button><div class="err" id="err"></div><div class="row"><button class="btn" data-act="close">Cancel</button><button class="btn pri" data-act="creategroup">Create group</button></div>`)},
+ emo(t){emoPick=t.dataset.e;document.querySelectorAll('.emos button').forEach(b=>b.classList.toggle('on',b===t))},
+ addmem(){const l=$('#ml');if(l.children.length>=12)return setErr('A group can have up to 12 people.');l.insertAdjacentHTML('beforeend',memInput('','Friend name'));l.lastElementChild.focus()},
+ creategroup(){const name=$('#gn').value.trim();if(!name)return setErr('Give the group a name.');
+  const names=[...document.querySelectorAll('.mi')].map(i=>i.value.trim()).filter(Boolean);
+  if(names.length<2)return setErr('Add at least two people, including you.');
+  if(new Set(names.map(x=>x.toLowerCase())).size!==names.length)return setErr('Each person needs a different name.');
+  const g={id:uid(),name,emoji:emoPick,cur:$('#gc').value,members:names.map(n=>({id:uid(),name:n})),expenses:[]};
+  S.groups.unshift(g);save();closeModal();R={view:'group',gid:g.id,tab:'expenses'};render(true);toast('Group created')},
+ addexp(){const g=curG();openModal(`<h3>Add expense</h3><label for="xd">What was it for?</label><input id="xd" maxlength="60" placeholder="Dinner, taxi, rent"><label for="xa">Amount (${esc(g.cur)})</label><input id="xa" inputmode="decimal" placeholder="0.00"><label for="xp">Paid by</label><select id="xp">${opts(g,g.members[0].id)}</select><div class="lbl">Split equally between</div><div class="chips">${g.members.map(m=>`<label class="chip"><input type="checkbox" class="xs" value="${m.id}" checked><span>${esc(m.name)}</span></label>`).join('')}</div><div class="hint" id="xv"></div><div class="err" id="err"></div><div class="row"><button class="btn" data-act="close">Cancel</button><button class="btn pri" data-act="saveexp">Save expense</button></div>`);prev()},
+ saveexp(){const g=curG(),d=$('#xd').value.trim(),a=money($('#xa').value),sp=[...document.querySelectorAll('.xs:checked')].map(i=>i.value);
+  if(!d)return setErr('Describe the expense.');if(!a)return setErr('Enter an amount greater than zero.');if(!sp.length)return setErr('Choose at least one person to share it.');
+  g.expenses.push({id:uid(),type:'expense',desc:d,amt:a,paidBy:$('#xp').value,split:sp,date:Date.now()});
+  save();closeModal();render(false);toast('Expense added')},
+ settle(t){const g=curG(),d=t.dataset;openModal(`<h3>Record a payment</h3><label for="sf">Who paid</label><select id="sf">${opts(g,d.from)}</select><label for="st">Who received</label><select id="st">${opts(g,d.to)}</select><label for="sa">Amount (${esc(g.cur)})</label><input id="sa" inputmode="decimal" value="${esc(d.amt)}"><div class="err" id="err"></div><div class="row"><button class="btn" data-act="close">Cancel</button><button class="btn pri" data-act="savesettle">Save payment</button></div>`)},
+ savesettle(){const g=curG(),f=$('#sf').value,to=$('#st').value,a=money($('#sa').value);
+  if(f===to)return setErr('Payer and receiver must be different people.');if(!a)return setErr('Enter an amount greater than zero.');
+  g.expenses.push({id:uid(),type:'settle',paidBy:f,to,amt:a,date:Date.now()});save();closeModal();render(false);toast('Payment recorded')},
+ del(t){const g=curG(),i=g.expenses.findIndex(e=>e.id===t.dataset.id);if(i<0)return;const [e]=g.expenses.splice(i,1);save();render(false);
+  toast('Entry deleted',()=>{g.expenses.push(e);save();render(false)})},
+ undo(){if(undoFn){undoFn();undoFn=null}$('#toast').classList.remove('show')},
+ close:closeModal,
+ demo(){const ids=['You','Riya','Kabir','Meera'].map(n=>({id:uid(),name:n})),[a,b,c,d]=ids.map(x=>x.id),now=Date.now(),D=864e5;
+  S.groups.unshift({id:uid(),name:'Goa trip',emoji:'✈️',cur:'INR',members:ids,expenses:[
+   {id:uid(),type:'expense',desc:'Beach villa, 3 nights',amt:2400000,paidBy:b,split:[a,b,c,d],date:now-3*D},
+   {id:uid(),type:'expense',desc:'Scooter rental',amt:360000,paidBy:a,split:[a,b,c],date:now-2*D},
+   {id:uid(),type:'expense',desc:'Seafood dinner',amt:518050,paidBy:c,split:[a,b,c,d],date:now-D},
+   {id:uid(),type:'settle',paidBy:d,to:b,amt:200000,date:now-D/2}]});
+  save();render(true)}
+};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(t&&A[t.dataset.act])A[t.dataset.act](t,e);else if(e.target.id==='modal')closeModal()});
+document.addEventListener('input',e=>{if(e.target.id==='xa'||e.target.classList.contains('xs'))prev();setErr('')});
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape')closeModal();
+ if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'&&$('#modal').classList.contains('open')){e.preventDefault();const p=$('#modal .btn.pri');if(p)p.click()}});
+render(true);
+</script>
+</body>
+</html>
